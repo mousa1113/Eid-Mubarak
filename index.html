@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>عيد أضحى مبارك يا Moka</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Scheherazade+New:wght@400;700&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+:root{
+  --bg:#04100a;
+  --gold:#d4a53f;
+  --gold2:#f2d98a;
+  --glow:rgba(212,165,63,.3);
+  --gm:#174d2b;
+  --gb:#3a8c56;
+  --text:#f0ebe0;
+  --dim:rgba(240,235,224,.45);
+}
+body{background:var(--bg);color:var(--text);font-family:'Scheherazade New',serif;overflow-x:hidden;direction:rtl}
+
+/* ══ LOADER ══ */
+#loader{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;
+  transition:opacity 1.2s ease,visibility 1.2s;
+}
+#loader.out{opacity:0;visibility:hidden;pointer-events:none}
+.ld-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(26,74,46,.45) 0%,transparent 65%);pointer-events:none}
+.ld-moon{font-size:5rem;margin-bottom:1.6rem;animation:lmoon 2.5s ease-in-out infinite;filter:drop-shadow(0 0 28px rgba(212,165,63,.5))}
+@keyframes lmoon{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-12px) rotate(6deg)}}
+.ld-lamps{display:flex;gap:2rem;margin-bottom:2.2rem}
+.ld-l{display:flex;flex-direction:column;align-items:center;transform-origin:top center}
+.ld-l:nth-child(1){animation:sw 2.2s ease-in-out infinite}
+.ld-l:nth-child(2){animation:sw 2.2s ease-in-out infinite .45s}
+.ld-l:nth-child(3){animation:sw 2.2s ease-in-out infinite .9s}
+@keyframes sw{0%,100%{transform:rotate(-9deg)}50%{transform:rotate(9deg)}}
+.ld-rope{width:1px;height:42px;background:linear-gradient(to bottom,var(--gold),transparent)}
+.ld-body{width:26px;height:40px;border-radius:38% 38% 48% 48%}
+.ld-l:nth-child(odd)  .ld-body{background:radial-gradient(ellipse at 40% 35%,#fce97a,#c9862a);box-shadow:0 0 14px rgba(252,233,122,.5)}
+.ld-l:nth-child(even) .ld-body{background:radial-gradient(ellipse at 40% 35%,#7de8a2,#1d6b3c);box-shadow:0 0 12px rgba(125,232,162,.4)}
+.ld-tip{width:2px;height:14px;background:var(--gold);opacity:.7}
+.ld-title{
+  font-family:'Amiri',serif;font-size:clamp(1.8rem,6vw,2.8rem);
+  color:var(--gold2);text-align:center;line-height:1.8;margin-bottom:2rem;
+  animation:tglow 2s ease-in-out infinite;
+}
+@keyframes tglow{0%,100%{text-shadow:0 0 18px rgba(212,165,63,.25)}50%{text-shadow:0 0 48px rgba(212,165,63,.7)}}
+.ld-track{width:230px;height:2px;background:rgba(212,165,63,.1);border-radius:2px;overflow:hidden;margin-bottom:.6rem}
+.ld-fill{height:100%;width:0%;background:linear-gradient(to left,var(--gold2),var(--gb));border-radius:2px;transition:width .06s linear}
+.ld-pct{font-family:monospace;font-size:.72rem;letter-spacing:.2em;color:rgba(212,165,63,.38)}
+
+/* ══ BG CANVAS ══ */
+#cvs{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ══ ROPE + LAMPS ══ */
+.rope-line{position:fixed;top:0;left:0;right:0;height:2px;
+  background:repeating-linear-gradient(to left,rgba(212,165,63,.35) 0,rgba(212,165,63,.35) 7px,transparent 7px,transparent 17px);
+  z-index:4;pointer-events:none}
+#lamps-bar{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-around;padding:0 1rem;z-index:5;pointer-events:none}
+.lamp{display:flex;flex-direction:column;align-items:center;transform-origin:top center}
+.lamp:nth-child(1){animation:sw 3.8s ease-in-out infinite}
+.lamp:nth-child(2){animation:sw 3.8s ease-in-out infinite .6s}
+.lamp:nth-child(3){animation:sw 3.8s ease-in-out infinite 1.2s}
+.lamp:nth-child(4){animation:sw 3.8s ease-in-out infinite .3s}
+.lamp:nth-child(5){animation:sw 3.8s ease-in-out infinite 1.8s}
+.lamp:nth-child(6){animation:sw 3.8s ease-in-out infinite .9s}
+.lamp-rope{width:1px;height:46px;background:linear-gradient(to bottom,rgba(212,165,63,.65),rgba(212,165,63,.04))}
+.lamp-body{width:16px;height:26px;border-radius:38% 38% 48% 48%}
+.lamp:nth-child(3n+1) .lamp-body{background:radial-gradient(ellipse at 40% 35%,#fce97a,#c9862a);box-shadow:0 0 10px rgba(252,233,122,.4)}
+.lamp:nth-child(3n+2) .lamp-body{background:radial-gradient(ellipse at 40% 35%,#7de8a2,#1d6b3c);box-shadow:0 0 10px rgba(125,232,162,.35)}
+.lamp:nth-child(3n)   .lamp-body{background:radial-gradient(ellipse at 40% 35%,#f5a07a,#c93a3a);box-shadow:0 0 10px rgba(245,160,122,.35)}
+.lamp-tip{width:1px;height:10px;background:rgba(212,165,63,.55)}
+
+/* ══ SECTIONS ══ */
+section{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:9rem 1.5rem 5rem;text-align:center;gap:1.4rem}
+
+/* ── HERO ── */
+#hero{background:radial-gradient(ellipse at 50% 0%,rgba(26,74,46,.3) 0%,transparent 55%)}
+.h-tag{font-family:'Amiri',serif;font-size:.75rem;letter-spacing:.5em;color:var(--gold);opacity:0;animation:up .9s ease forwards .3s}
+.h-title{
+  font-family:'Amiri',serif;font-weight:700;
+  font-size:clamp(4rem,16vw,10rem);line-height:.9;
+  background:linear-gradient(160deg,#f5e88a 0%,#d4a53f 30%,#a8722a 55%,#3a8c56 80%,#a8722a 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 2px 0 rgba(0,0,0,.4));
+  opacity:0;transform:translateY(26px);animation:up 1s cubic-bezier(.16,1,.3,1) forwards .55s
+}
+.h-moon-row{display:flex;align-items:center;gap:.8rem;opacity:0;animation:up .9s ease forwards 1.1s}
+.h-moon-row .hl{flex:1;height:1px;background:linear-gradient(to right,transparent,rgba(212,165,63,.4),transparent)}
+.h-moon-row .hm{font-size:1.5rem}
+.h-name{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:clamp(2rem,6vw,4rem);
+  color:var(--gold2);letter-spacing:.06em;
+  opacity:0;animation:up .9s ease forwards 1.4s
+}
+.h-sub{font-family:'Amiri',serif;font-size:clamp(.9rem,2vw,1.1rem);line-height:2.2;color:var(--dim);max-width:370px;opacity:0;animation:up .9s ease forwards 1.8s}
+.tap{position:absolute;bottom:2.2rem;display:flex;flex-direction:column;align-items:center;gap:.5rem;opacity:0;animation:up .9s ease forwards 2.5s}
+.tap span{font-size:.58rem;letter-spacing:.3em;color:rgba(212,165,63,.36)}
+.tap-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--gold),transparent);animation:pls 2s ease-in-out infinite}
+@keyframes pls{0%,100%{opacity:1;transform:scaleY(1)}50%{opacity:.15;transform:scaleY(.4)}}
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SEP ── */
+.sep{display:flex;align-items:center;gap:.6rem;padding:0 2rem;position:relative;z-index:2}
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:linear-gradient(to right,transparent,rgba(212,165,63,.25),transparent)}
+.sep-gem{width:7px;height:7px;background:var(--gold);transform:rotate(45deg);flex-shrink:0;box-shadow:0 0 7px var(--glow)}
+
+/* ── CARDS ── */
+#cards{gap:2rem}
+.s-lbl{font-family:'Amiri',serif;font-size:.7rem;letter-spacing:.4em;color:var(--gold)}
+.s-ttl{font-family:'Amiri',serif;font-size:clamp(1.4rem,4vw,2.4rem);color:var(--text);font-weight:400}
+#stack{width:min(640px,92vw);position:relative;min-height:260px}
+.card{
+  position:absolute;inset:0;
+  background:linear-gradient(148deg,rgba(23,77,43,.65) 0%,rgba(13,46,26,.82) 100%);
+  border:1px solid rgba(212,165,63,.13);border-radius:16px;
+  padding:2.6rem 2rem;display:flex;flex-direction:column;align-items:center;gap:1.1rem;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  opacity:0;transform:translateX(58px) scale(.96);
+  transition:opacity .55s cubic-bezier(.16,1,.3,1),transform .55s cubic-bezier(.16,1,.3,1);
+  pointer-events:none
+}
+.card.show{opacity:1;transform:none;pointer-events:all}
+.card.exit{opacity:0;transform:translateX(-58px) scale(.96)}
+.c-ico{font-size:2rem;animation:bob 3.5s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.c-txt{font-family:'Amiri',serif;font-size:clamp(1.05rem,2.4vw,1.38rem);line-height:2.15;color:var(--text)}
+.c-sig{font-family:'Amiri',serif;font-size:.7rem;letter-spacing:.25em;color:var(--gold);opacity:.6}
+.cnav{display:flex;align-items:center;gap:.9rem}
+.ca{width:34px;height:34px;border-radius:50%;border:1px solid rgba(212,165,63,.25);background:transparent;color:var(--gold);font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .28s;font-family:serif}
+.ca:hover{background:rgba(212,165,63,.1);border-color:var(--gold);box-shadow:0 0 12px var(--glow)}
+.cdots{display:flex;gap:.4rem}
+.cdot{width:5px;height:5px;border-radius:50%;background:rgba(212,165,63,.2);cursor:pointer;transition:all .28s}
+.cdot.on{background:var(--gold);transform:scale(1.6)}
+
+/* ── DUA ── */
+#dua{background:radial-gradient(ellipse at 30% 60%,rgba(23,77,43,.12) 0%,transparent 55%);gap:2.2rem}
+.dua-wrap{max-width:540px;position:relative;padding:2.5rem 2rem}
+.dua-wrap::before,.dua-wrap::after{content:'';position:absolute;width:38px;height:38px;border-color:rgba(212,165,63,.3);border-style:solid}
+.dua-wrap::before{top:0;right:0;border-width:2px 2px 0 0;border-radius:0 8px 0 0}
+.dua-wrap::after{bottom:0;left:0;border-width:0 0 2px 2px;border-radius:0 0 0 8px}
+.dua-inner{background:linear-gradient(148deg,rgba(23,77,43,.5),rgba(13,46,26,.68));border:1px solid rgba(212,165,63,.11);border-radius:14px;padding:2.8rem 2rem;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.dua-txt{font-family:'Amiri',serif;font-size:clamp(1.15rem,2.6vw,1.55rem);line-height:2.5;color:var(--text)}
+.dua-txt b{color:var(--gold2);font-weight:700}
+
+/* ── FINALE ── */
+#finale{overflow:hidden;gap:1.6rem}
+#fw-cv{position:absolute;inset:0;pointer-events:none}
+.fin-h{font-family:'Amiri',serif;font-weight:700;font-size:clamp(3rem,11vw,8rem);line-height:.9;background:linear-gradient(150deg,#f5e88a,#d4a53f,#3a8c56);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;z-index:2;animation:shim 3.5s ease-in-out infinite}
+@keyframes shim{0%,100%{filter:drop-shadow(0 0 10px rgba(212,165,63,.25))}50%{filter:drop-shadow(0 0 42px rgba(212,165,63,.7))}}
+.fin-name{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(1.2rem,4vw,2.5rem);color:var(--gold2);position:relative;z-index:2}
+.fin-p{max-width:420px;line-height:2.2;color:var(--dim);font-family:'Amiri',serif;font-size:clamp(.9rem,2vw,1.1rem);position:relative;z-index:2}
+#btn-w{padding:.85rem 2.6rem;background:linear-gradient(135deg,var(--gm),var(--gb));border:none;color:var(--text);font-family:'Amiri',serif;font-size:1.05rem;cursor:pointer;border-radius:100px;position:relative;z-index:2;box-shadow:0 4px 24px rgba(58,140,86,.45);transition:transform .25s,box-shadow .25s}
+#btn-w:hover{transform:scale(1.07);box-shadow:0 8px 44px rgba(58,140,86,.6)}
+#btn-w:active{transform:scale(.97)}
+
+/* ── REVEAL ── */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+.rv.on{opacity:1;transform:none}
+
+/* ── BURST ── */
+.bst{position:fixed;pointer-events:none;z-index:8000}
+.bp{position:absolute;border-radius:50%;transform:translate(-50%,-50%);animation:bfly .85s ease-out forwards}
+@keyframes bfly{to{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0)}}
+
+@media(max-width:480px){#lamps-bar .lamp:nth-child(n+5){display:none}}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="ld-glow"></div>
+  <div class="ld-moon">🌙</div>
+  <div class="ld-lamps">
+    <div class="ld-l"><div class="ld-rope"></div><div class="ld-body"></div><div class="ld-tip"></div></div>
+    <div class="ld-l"><div class="ld-rope"></div><div class="ld-body"></div><div class="ld-tip"></div></div>
+    <div class="ld-l"><div class="ld-rope"></div><div class="ld-body"></div><div class="ld-tip"></div></div>
+  </div>
+  <div class="ld-title">عيد أضحى مبارك<br>يا Moka 🌸</div>
+  <div class="ld-track"><div class="ld-fill" id="lf"></div></div>
+  <div class="ld-pct" id="lp">٠٪</div>
+</div>
+
+<!-- BG -->
+<canvas id="cvs"></canvas>
+
+<!-- ROPE + LAMPS -->
+<div class="rope-line"></div>
+<div id="lamps-bar">
+  <div class="lamp"><div class="lamp-rope"></div><div class="lamp-body"></div><div class="lamp-tip"></div></div>
+  <div class="lamp"><div class="lamp-rope"></div><div class="lamp-body"></div><div class="lamp-tip"></div></div>
+  <div class="lamp"><div class="lamp-rope"></div><div class="lamp-body"></div><div class="lamp-tip"></div></div>
+  <div class="lamp"><div class="lamp-rope"></div><div class="lamp-body"></div><div class="lamp-tip"></div></div>
+  <div class="lamp"><div class="lamp-rope"></div><div class="lamp-body"></div><div class="lamp-tip"></div></div>
+  <div class="lamp"><div class="lamp-rope"></div><div class="lamp-body"></div><div class="lamp-tip"></div></div>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="h-tag">✦ بكل المحبة ✦</div>
+  <div class="h-title">عيد مبارك</div>
+  <div class="h-moon-row">
+    <span class="hl"></span>
+    <span class="hm">🌙</span>
+    <span class="hl"></span>
+  </div>
+  <div class="h-name">Moka</div>
+  <p class="h-sub">في هذا العيد المبارك أهنئكِ من أعماق قلبي —<br>كل عيد وأنتِ نور حياتي وسعادتي</p>
+  <div class="tap">
+    <span>اسحبي للأسفل</span>
+    <div class="tap-line"></div>
+  </div>
+</section>
+
+<div class="sep"><div class="sep-gem"></div></div>
+
+<!-- CARDS -->
+<section id="cards">
+  <div class="s-lbl rv">✦ رسايل من القلب ✦</div>
+  <div class="s-ttl rv">كلام عايزك تعرفيه</div>
+  <div id="stack" class="rv">
+
+    <div class="card show">
+      <div class="c-ico">🌙</div>
+      <div class="c-txt">والله العظيم انتي أحلى عيدية ربنا أداهالي في حياتي كلها — وبجد مالوش فرحة من غيرك</div>
+      <div class="c-sig">— من أعمق قلبي</div>
+    </div>
+
+    <div class="card">
+      <div class="c-ico">⭐</div>
+      <div class="c-txt">والله يا بصمتي، انتي العيد اللي في قلبي طول السنة — والجمال اللي ملوش زي في الدنيا دي</div>
+      <div class="c-sig">— دايمًا معكِ</div>
+    </div>
+
+    <div class="card">
+      <div class="c-ico">💛</div>
+      <div class="c-txt">والله بجد، أنا كل ما أبص ليكِ بحس إن العيد جه بدري — ومبقتش عايز حد تاني يملي عيني</div>
+      <div class="c-sig">— عيوني عليكِ</div>
+    </div>
+
+    <div class="card">
+      <div class="c-ico">🌹</div>
+      <div class="c-txt">والله العظيم انتي اللي مخلية للأيام طعم — ومخلية العيد السنة دي مختلف ومبهج عن أي سنة فاتت</div>
+      <div class="c-sig">— بحبك يا موكا</div>
+    </div>
+
+    <div class="card">
+      <div class="c-ico">✨</div>
+      <div class="c-txt">والله يا روحي، أنا بكتشف كل يوم إنك الحظ الحلو اللي طلعت بيه — والضحكة اللي بتطلع من قلبي بجد</div>
+      <div class="c-sig">— حظي فيكِ</div>
+    </div>
+
+    <div class="card">
+      <div class="c-ico">❤️</div>
+      <div class="c-txt">والله العظيم بحبك وبعشق كل حتة في تفاصيلك — ده الكلام الحلو اللي جوّا قلبي ليكِ</div>
+      <div class="c-sig">— لك وبس للأبد</div>
+    </div>
+
+  </div>
+  <div class="cnav rv">
+    <button class="ca" id="btn-p">&#8594;</button>
+    <div class="cdots" id="cdots"></div>
+    <button class="ca" id="btn-n">&#8592;</button>
+  </div>
+</section>
+
+<div class="sep"><div class="sep-gem"></div></div>
+
+<!-- DUA -->
+<section id="dua">
+  <div class="s-lbl rv">✦ كلام ✦</div>
+  <div class="s-ttl rv">من القلب ليكِ</div>
+  <div class="dua-wrap rv">
+    <div class="dua-inner">
+      <p class="dua-txt">
+        أنا كل يوم بتعلق بيكِ أكتر —<br>
+        ومابقتش شايف حد غيرك في الدنيا دي كلها<br><br>
+        انتي اللي بتفرحيني مهما كنت مضايق —<br>
+        ومالوش غيرك يفهمني من غير ما أتكلم<br><br>
+        يا حبيبتي انتي بنتي وصاحبتي وكل دنيتي —<br>
+        وبموت في طريقتك واهتمامك بيّا<br><br>
+        وكل عيد وأنتِ <b>حتة مني</b> ❤️
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="sep"><div class="sep-gem"></div></div>
+
+<!-- FINALE -->
+<section id="finale">
+  <canvas id="fw-cv"></canvas>
+  <div class="s-lbl rv" style="position:relative;z-index:2">✦ بكل محبة ✦</div>
+  <div class="fin-h rv">عيد مبارك</div>
+  <div class="fin-name rv">Moka 🌙</div>
+  <p class="fin-p rv">كل عيد وأنتِ نور بيملا الدنيا —<br>ومحتاجة تعرفي إنك حتة مني ❤️</p>
+  <button id="btn-w" class="rv">🎉 احتفلي معايا!</button>
+</section>
+
+<script>
+/* ── LOADER ── */
+(function(){
+  var f=document.getElementById('lf'), p=document.getElementById('lp');
+  var ar=['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+  function toAr(n){ return String(Math.floor(n)).split('').map(function(d){return ar[+d]}).join(''); }
+  var v=0,iv=setInterval(function(){
+    v=Math.min(v+(v<65?Math.random()*3.5+.8:Math.random()*1.2+.2),99);
+    f.style.width=v+'%'; p.textContent=toAr(v)+'٪';
+  },75);
+  function done(){
+    clearInterval(iv); f.style.width='100%'; p.textContent='١٠٠٪';
+    setTimeout(function(){ document.getElementById('loader').classList.add('out'); },600);
+  }
+  window.addEventListener('load',done);
+  setTimeout(done,3800);
+})();
+
+/* ── BG CANVAS ── */
+(function(){
+  var c=document.getElementById('cvs'), ctx=c.getContext('2d');
+  function sz(){ c.width=innerWidth; c.height=innerHeight; }
+  sz(); window.addEventListener('resize',sz);
+
+  var stars=Array.from({length:160},function(){
+    return{x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*1.4+.2,ph:Math.random()*Math.PI*2,sp:Math.random()*.006+.003};
+  });
+  var syms=['☪','🌙','✨','⭐','🕌','🌸'];
+  var drops=Array.from({length:20},function(){
+    return{x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:syms[Math.floor(Math.random()*syms.length)],sz:Math.random()*13+9,vy:Math.random()*.35+.12,vx:(Math.random()-.5)*.18,a:Math.random()*.2+.05,rot:Math.random()*Math.PI*2,rs:(Math.random()-.5)*.007};
+  });
+
+  function crescent(x,y,r,a){
+    ctx.save(); ctx.globalAlpha=a;
+    ctx.fillStyle='rgba(212,165,63,1)'; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#04100a'; ctx.beginPath(); ctx.arc(x+r*.38,y-r*.1,r*.82,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+
+  function frame(){
+    ctx.clearRect(0,0,c.width,c.height);
+    crescent(75,75,36,.1);
+    stars.forEach(function(s){
+      s.ph+=s.sp;
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(240,200,110,'+(0.07+Math.abs(Math.sin(s.ph))*.72)+')'; ctx.fill();
+    });
+    drops.forEach(function(d){
+      d.y+=d.vy; d.x+=d.vx; d.rot+=d.rs;
+      if(d.y>c.height+30){ d.y=-30; d.x=Math.random()*c.width; }
+      ctx.save(); ctx.translate(d.x,d.y); ctx.rotate(d.rot); ctx.globalAlpha=d.a;
+      ctx.font=d.sz+'px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(d.s,0,0); ctx.restore();
+    });
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+
+/* ── SCROLL REVEAL ── */
+(function(){
+  var els=document.querySelectorAll('.rv');
+  function chk(){ els.forEach(function(el){ if(el.getBoundingClientRect().top<innerHeight*.88) el.classList.add('on'); }); }
+  chk(); window.addEventListener('scroll',chk,{passive:true});
+})();
+
+/* ── BURST ── */
+function burst(x,y,n){
+  n=n||12;
+  var cols=['#d4a53f','#f2d98a','#3a8c56','#f0ebe0','#2d6e47','#fce97a'];
+  var b=document.createElement('div'); b.className='bst'; b.style.left=x+'px'; b.style.top=y+'px';
+  for(var i=0;i<n;i++){
+    var d=document.createElement('div'); d.className='bp';
+    var ang=(i/n)*Math.PI*2, dist=28+Math.random()*55;
+    d.style.setProperty('--tx',Math.cos(ang)*dist+'px');
+    d.style.setProperty('--ty',Math.sin(ang)*dist+'px');
+    d.style.background=cols[i%cols.length];
+    var sz=(2+Math.random()*5)+'px'; d.style.width=sz; d.style.height=sz;
+    b.appendChild(d);
+  }
+  document.body.appendChild(b);
+  setTimeout(function(){ b.remove(); },950);
+}
+document.getElementById('hero').addEventListener('click',function(e){ burst(e.clientX,e.clientY,20); });
+
+/* ── CARDS ── */
+(function(){
+  var cards=Array.from(document.querySelectorAll('.card'));
+  var dots=document.getElementById('cdots');
+  var cur=0,busy=false;
+  cards.forEach(function(_,i){
+    var d=document.createElement('div'); d.className='cdot'+(i===0?' on':'');
+    d.addEventListener('click',function(){ go(i); }); dots.appendChild(d);
+  });
+  function upd(){ dots.querySelectorAll('.cdot').forEach(function(d,i){ d.classList.toggle('on',i===cur); }); }
+  function go(nxt){
+    if(busy||nxt===cur) return; busy=true;
+    cards[cur].classList.remove('show'); cards[cur].classList.add('exit');
+    var old=cur; cur=nxt;
+    setTimeout(function(){
+      cards[old].classList.remove('exit'); cards[cur].classList.add('show');
+      upd(); burst(innerWidth/2,innerHeight*.55,10); busy=false;
+    },420);
+  }
+  document.getElementById('btn-p').addEventListener('click',function(){ go((cur-1+cards.length)%cards.length); });
+  document.getElementById('btn-n').addEventListener('click',function(){ go((cur+1)%cards.length); });
+  setInterval(function(){ go((cur+1)%cards.length); },5500);
+})();
+
+/* ── FIREWORKS ── */
+(function(){
+  var c=document.getElementById('fw-cv'), cx=c.getContext('2d');
+  var W,H,pts=[],active=false;
+  function sz(){ W=c.width=c.offsetWidth; H=c.height=c.offsetHeight; }
+  sz(); window.addEventListener('resize',sz);
+  function P(x,y){
+    var a=Math.random()*Math.PI*2,sp=Math.random()*7+2;
+    this.x=x; this.y=y; this.vx=Math.cos(a)*sp; this.vy=Math.sin(a)*sp-2;
+    this.alpha=1; this.hue=Math.random()*100+20; this.r=Math.random()*4+1;
+  }
+  P.prototype.tick=function(){ this.x+=this.vx; this.y+=this.vy; this.vy+=.13; this.alpha-=.015; };
+  P.prototype.draw=function(){
+    cx.save(); cx.globalAlpha=Math.max(0,this.alpha);
+    cx.fillStyle='hsl('+this.hue+',90%,66%)';
+    cx.beginPath(); cx.arc(this.x,this.y,this.r,0,Math.PI*2); cx.fill(); cx.restore();
+  };
+  function fire(){
+    var x=W*.1+Math.random()*W*.8, y=H*.1+Math.random()*H*.5;
+    for(var i=0;i<100;i++) pts.push(new P(x,y));
+  }
+  function loop(){
+    if(!active) return;
+    cx.fillStyle='rgba(4,16,10,.18)'; cx.fillRect(0,0,W,H);
+    pts=pts.filter(function(p){return p.alpha>0;});
+    pts.forEach(function(p){p.tick();p.draw();});
+    requestAnimationFrame(loop);
+  }
+  var iv;
+  document.getElementById('btn-w').addEventListener('click',function(){
+    if(active) return; active=true;
+    burst(innerWidth/2,innerHeight/2,26); fire(); loop();
+    iv=setInterval(fire,550);
+    setTimeout(function(){ clearInterval(iv); setTimeout(function(){ active=false; cx.clearRect(0,0,W,H); },3200); },5500);
+  });
+})();
+</script>
+</body>
+</html>
